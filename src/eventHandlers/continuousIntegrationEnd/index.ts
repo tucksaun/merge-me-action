@@ -9,7 +9,10 @@ import {
   MINIMUM_WAIT_TIME,
 } from '../../common/delay';
 import { getMergeablePullRequestInformationByPullRequestNumber } from '../../common/getPullRequestInformation';
-import { listBranchProtectionRules } from '../../common/listBranchProtectionRules';
+import {
+  BranchProtectionRule,
+  listBranchProtectionRules
+} from '../../common/listBranchProtectionRules';
 import { tryMerge } from '../../common/merge';
 import { PullRequest, PullRequestInformation } from '../../types';
 import { logDebug, logInfo, logWarning } from '../../utilities/log';
@@ -78,11 +81,17 @@ export const continuousIntegrationEndHandle = async (
       : context.payload.check_suite
   ).pull_requests as PullRequest[];
 
-  const branchProtectionRules = await listBranchProtectionRules(
-    octokit,
-    context.repo.owner,
-    context.repo.repo,
-  );
+  let branchProtectionRules: BranchProtectionRule[] = [];
+
+  if (getInput('IGNORE_BRANCH_PROTECTION') !== 'true') {
+    branchProtectionRules = await listBranchProtectionRules(
+      octokit,
+      context.repo.owner,
+      context.repo.repo,
+    );
+  } else {
+    logInfo(`Disable branch protection checks.`);
+  }
 
   const requiresStrictStatusChecksArray =
     computeRequiresStrictStatusChecksForReferences(

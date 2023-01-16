@@ -19,6 +19,11 @@ inputs:
       Indicates if GitHub preview APIs can be used to access pull request fields
       that provide more detailed information about the merge state.
     required: false
+  IGNORE_BRANCH_PROTECTION:
+    default: 'false'
+    description: >
+      Indicates if GitHub branch protection rules should be checked or not.
+    required: false
   MERGE_METHOD:
     default: SQUASH
     description:

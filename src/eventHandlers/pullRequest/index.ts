@@ -24,7 +24,7 @@ export const pullRequestHandle = async (
   }
 
   const [branchProtectionRules, pullRequestInformation] = await Promise.all([
-    await listBranchProtectionRules(
+    getInput('IGNORE_BRANCH_PROTECTION') === 'true' ? [] : listBranchProtectionRules(
       octokit,
       context.repo.owner,
       context.repo.repo,
